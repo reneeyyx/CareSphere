@@ -59,6 +59,28 @@ function PatientRiskDashboard() {
     setExpandedPatient(expandedPatient === patientId ? null : patientId)
   }
 
+  const handleCheckIn = (patientId) => {
+    const now = new Date()
+    const timeString = now.toLocaleTimeString('en-US', { 
+      hour: '2-digit', 
+      minute: '2-digit',
+      hour12: true 
+    })
+    const dateString = now.toLocaleDateString('en-US', { 
+      month: 'short', 
+      day: 'numeric',
+      year: 'numeric'
+    })
+    
+    setPatients(prevPatients => 
+      prevPatients.map(p => 
+        p.id === patientId 
+          ? { ...p, lastCheck: `${dateString} at ${timeString}` }
+          : p
+      )
+    )
+  }
+
   // Pagination calculations
   const totalPages = pageSize === 'all' ? 1 : Math.ceil(filteredPatients.length / pageSize)
   const startIndex = pageSize === 'all' ? 0 : (currentPage - 1) * pageSize
@@ -146,6 +168,7 @@ function PatientRiskDashboard() {
             rank={startIndex + index + 1}
             isExpanded={expandedPatient === patient.id}
             onToggle={() => togglePatient(patient.id)}
+            onCheckIn={handleCheckIn}
           />
         ))}
       </div>

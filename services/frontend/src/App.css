@@ -11,14 +11,14 @@
   background: white;
   padding: 10px 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-bottom: 2px solid #1e3a8a;
+  border-bottom: 2px solid #172554;
 }
 
 .navbar-title {
   margin: 0;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1e3a8a;
+  color: #172554;
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -34,7 +34,7 @@
 .app-header {
   text-align: center;
   padding: 20px 20px;
-  color: #1e3a8a;
+  color: #000000;
   margin-bottom: 20px;
 }
 
@@ -43,14 +43,14 @@
   font-weight: 700;
   margin-bottom: 10px;
   text-shadow: none;
-  color: #1e3a8a;
+  color: #000000;
 }
 
 .app-header p {
   font-size: 1.2rem;
   opacity: 0.8;
   font-weight: 300;
-  color: #1e3a8a;
+  color: #000000;
   margin: 0;
 }
 

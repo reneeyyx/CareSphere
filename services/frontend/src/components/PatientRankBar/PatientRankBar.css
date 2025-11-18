@@ -36,7 +36,6 @@
   color: #6b7280;
   font-size: 1.5rem;
   font-weight: 400;
-  font-family: sans-serif;
 }
 
 .patient-summary {
@@ -55,7 +54,7 @@
 .patient-name {
   font-size: 1.125rem;
   font-weight: 400;
-  color: #1e3a8a;
+  color: #000000;
   margin: 0;
 }
 
@@ -66,6 +65,29 @@
   padding: 4px 10px;
   background: #f3f4f6;
   border-radius: 6px;
+}
+
+.check-alert {
+  font-size: 0.875rem;
+  color: white;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.check-alert-overdue {
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }
 
 .risk-bar-container {
@@ -205,6 +227,31 @@
   font-weight: 600;
   color: #6b7280;
   font-size: 0.875rem;
+}
+
+.check-in-btn {
+  padding: 8px 16px;
+  background: #10b981;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.check-in-btn:hover {
+  background: #059669;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+.check-in-btn:active {
+  transform: translateY(0);
 }
 
 .detail-value {

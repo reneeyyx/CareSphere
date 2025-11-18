@@ -1,7 +1,7 @@
 import React from 'react'
 import './PatientRankBar.css'
 
-function PatientRankBar({ patient, rank, isExpanded, onToggle }) {
+function PatientRankBar({ patient, rank, isExpanded, onToggle, onCheckIn }) {
   const getRiskColor = (level) => {
     switch(level) {
       case 'high':
@@ -19,6 +19,59 @@ function PatientRankBar({ patient, rank, isExpanded, onToggle }) {
     return level.charAt(0).toUpperCase() + level.slice(1)
   }
 
+  const getCheckInStatus = () => {
+    if (!patient.lastCheck) return { status: 'overdue', message: 'Check needed', color: '#ef4444' }
+    
+    // Parse the last check time
+    const lastCheckStr = patient.lastCheck
+    let lastCheckDate
+    
+    try {
+      // Try to parse the date string
+      lastCheckDate = new Date(lastCheckStr)
+      
+      // If invalid date, try to extract just the date part
+      if (isNaN(lastCheckDate.getTime())) {
+        // For formats like "Nov 17, 2025 at 2:30 PM"
+        const match = lastCheckStr.match(/(\w+ \d+, \d+) at (\d+:\d+ [AP]M)/)
+        if (match) {
+          lastCheckDate = new Date(`${match[1]} ${match[2]}`)
+        }
+      }
+    } catch (e) {
+      return { status: 'unknown', message: 'Check needed', color: '#6b7280' }
+    }
+
+    if (isNaN(lastCheckDate.getTime())) {
+      return { status: 'unknown', message: 'Check needed', color: '#6b7280' }
+    }
+
+    const now = new Date()
+    const hoursSinceCheck = (now - lastCheckDate) / (1000 * 60 * 60)
+    
+    // Determine check interval based on risk level
+    const checkInterval = patient.riskLevel === 'high' ? 2 : 
+                         patient.riskLevel === 'medium' ? 4 : 8
+    
+    const hoursRemaining = checkInterval - hoursSinceCheck
+    
+    if (hoursRemaining <= 0) {
+      return { status: 'overdue', message: '⚠️ Check Overdue', color: '#ef4444' }
+    } else if (hoursRemaining <= 0.5) {
+      return { status: 'due-soon', message: '⏰ Check Due Soon', color: '#f59e0b' }
+    } else {
+      const hours = Math.floor(hoursRemaining)
+      const minutes = Math.round((hoursRemaining - hours) * 60)
+      return { 
+        status: 'on-track', 
+        message: `Next check in ${hours}h ${minutes}m`, 
+        color: '#10b981' 
+      }
+    }
+  }
+
+  const checkInStatus = getCheckInStatus()
+
   return (
     <div className="patient-rank-bar">
       <div 
@@ -34,6 +87,14 @@ function PatientRankBar({ patient, rank, isExpanded, onToggle }) {
           <div className="patient-main-info">
             <h3 className="patient-name">{patient.name}</h3>
             <span className="patient-room">Room {patient.room}</span>
+            {checkInStatus.status !== 'on-track' && (
+              <span 
+                className={`check-alert check-alert-${checkInStatus.status}`}
+                style={{ backgroundColor: checkInStatus.color }}
+              >
+                {checkInStatus.message}
+              </span>
+            )}
           </div>
           
           <div className="risk-bar-container">
@@ -123,6 +184,27 @@ function PatientRankBar({ patient, rank, isExpanded, onToggle }) {
                 <div className="detail-item">
                   <span className="detail-label">Last Assessment:</span>
                   <span className="detail-value">{patient.lastCheck}</span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label">Check Status:</span>
+                  <span 
+                    className="detail-value"
+                    style={{ color: checkInStatus.color, fontWeight: '700' }}
+                  >
+                    {checkInStatus.message}
+                  </span>
+                </div>
+                <div className="detail-item">
+                  <span className="detail-label"></span>
+                  <button 
+                    className="check-in-btn"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      onCheckIn(patient.id)
+                    }}
+                  >
+                    ✓ Check In Now
+                  </button>
                 </div>
               </div>
             </div>

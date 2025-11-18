@@ -14,7 +14,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   font-size: 1rem;
-  color: #1e3a8a;
+  color: #000000;
   font-weight: 600;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   white-space: nowrap;
@@ -28,16 +28,16 @@
 .filter-icon {
   display: flex;
   align-items: center;
-  color: #1e3a8a;
+  color: #000000;
 }
 
 .filter-label {
-  color: #1e3a8a;
+  color: #000000;
 }
 
 .filter-arrow {
   transition: transform 0.3s;
-  color: #1e3a8a;
+  color: #000000;
 }
 
 .filter-arrow.open {
@@ -110,7 +110,7 @@
 
 .filter-option-label {
   font-weight: 600;
-  color: #1e3a8a;
+  color: #000000;
   font-size: 0.95rem;
 }
 
