@@ -1,0 +1,141 @@
+.patient-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-left: 5px solid;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.patient-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.patient-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.patient-info {
+  flex: 1;
+}
+
+.patient-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 4px;
+}
+
+.patient-id {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.risk-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.patient-details {
+  margin-bottom: 16px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.detail-value {
+  color: #1f2937;
+  font-size: 0.9rem;
+}
+
+.risk-factors {
+  margin: 16px 0;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.risk-factors-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.risk-factors-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.risk-factors-list li {
+  padding: 4px 0;
+  color: #6b7280;
+  font-size: 0.875rem;
+  position: relative;
+  padding-left: 16px;
+}
+
+.risk-factors-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: #9ca3af;
+  font-weight: bold;
+}
+
+.patient-vitals {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.vital {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.vital-label {
+  font-size: 0.75rem;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.vital-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1f2937;
+}
