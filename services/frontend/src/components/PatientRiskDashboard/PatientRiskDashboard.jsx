@@ -12,6 +12,7 @@ function PatientRiskDashboard() {
   const [expandedPatient, setExpandedPatient] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     // Fetch patients from API
@@ -31,6 +32,18 @@ function PatientRiskDashboard() {
 
   useEffect(() => {
     let filtered = [...patients]
+    
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase()
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(query) ||
+        p.id.toLowerCase().includes(query) ||
+        p.room.toLowerCase().includes(query) ||
+        p.riskLevel.toLowerCase().includes(query) ||
+        p.age.toString().includes(query)
+      )
+    }
     
     // Filter by risk level
     if (selectedRisk !== 'all') {
@@ -56,7 +69,7 @@ function PatientRiskDashboard() {
     })
 
     setFilteredPatients(filtered)
-  }, [patients, selectedRisk, sortBy])
+  }, [patients, selectedRisk, sortBy, searchQuery])
 
   const riskCounts = {
     high: patients.filter(p => p.riskLevel === 'high').length,
@@ -104,7 +117,7 @@ function PatientRiskDashboard() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1)
-  }, [selectedRisk, sortBy, pageSize])
+  }, [selectedRisk, sortBy, pageSize, searchQuery])
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
@@ -148,6 +161,37 @@ function PatientRiskDashboard() {
 
   return (
     <div className="patient-risk-dashboard">
+      <div className="search-bar-container">
+        <div className="search-bar">
+          <svg 
+            className="search-icon" 
+            width="20" 
+            height="20" 
+            viewBox="0 0 20 20" 
+            fill="none"
+          >
+            <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="2"/>
+            <path d="M14 14L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search by name, ID, room, or risk level..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          {searchQuery && (
+            <button 
+              className="clear-search"
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="dashboard-controls">
         <RiskFilter 
           selectedRisk={selectedRisk}
