@@ -8,7 +8,9 @@ function RiskFilter({ selectedRisk, onRiskChange, riskCounts }) {
     { value: 'all', label: 'All Patients', count: riskCounts.total, color: '#6b7280' },
     { value: 'high', label: 'High Risk', count: riskCounts.high, color: '#ef4444' },
     { value: 'medium', label: 'Medium Risk', count: riskCounts.medium, color: '#f59e0b' },
-    { value: 'low', label: 'Low Risk', count: riskCounts.low, color: '#10b981' }
+    { value: 'low', label: 'Low Risk', count: riskCounts.low, color: '#10b981' },
+    { value: 'overdue', label: 'Check Overdue', count: riskCounts.overdue, color: '#dc2626' },
+    { value: 'due-soon', label: 'Check Due Soon', count: riskCounts.dueSoon, color: '#f59e0b' }
   ]
 
   const currentFilter = filters.find(f => f.value === selectedRisk)

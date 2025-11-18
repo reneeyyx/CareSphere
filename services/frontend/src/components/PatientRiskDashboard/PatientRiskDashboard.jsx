@@ -45,9 +45,15 @@ function PatientRiskDashboard() {
       )
     }
     
-    // Filter by risk level
+    // Filter by risk level or check-in status
     if (selectedRisk !== 'all') {
-      filtered = filtered.filter(p => p.riskLevel === selectedRisk)
+      if (selectedRisk === 'overdue') {
+        filtered = filtered.filter(p => getCheckInStatus(p) === 'overdue')
+      } else if (selectedRisk === 'due-soon') {
+        filtered = filtered.filter(p => getCheckInStatus(p) === 'due-soon')
+      } else {
+        filtered = filtered.filter(p => p.riskLevel === selectedRisk)
+      }
     }
 
     // Sort patients
@@ -71,10 +77,27 @@ function PatientRiskDashboard() {
     setFilteredPatients(filtered)
   }, [patients, selectedRisk, sortBy, searchQuery])
 
+  // Helper function to get check-in status
+  const getCheckInStatus = (patient) => {
+    if (!patient.lastCheckTimestamp) return 'unknown'
+    
+    const now = new Date().getTime()
+    const hoursSinceCheck = (now - patient.lastCheckTimestamp) / (1000 * 60 * 60)
+    const checkInterval = patient.riskLevel === 'high' ? 2 : 
+                         patient.riskLevel === 'medium' ? 4 : 8
+    const hoursRemaining = checkInterval - hoursSinceCheck
+    
+    if (hoursRemaining <= 0) return 'overdue'
+    if (hoursRemaining <= 0.5) return 'due-soon'
+    return 'on-track'
+  }
+
   const riskCounts = {
     high: patients.filter(p => p.riskLevel === 'high').length,
     medium: patients.filter(p => p.riskLevel === 'medium').length,
     low: patients.filter(p => p.riskLevel === 'low').length,
+    overdue: patients.filter(p => getCheckInStatus(p) === 'overdue').length,
+    dueSoon: patients.filter(p => getCheckInStatus(p) === 'due-soon').length,
     total: patients.length
   }
 
