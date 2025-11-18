@@ -1,0 +1,396 @@
+{
+  "patients": [
+    {
+      "id": "P001",
+      "name": "Margaret Thompson",
+      "age": 78,
+      "room": "204A",
+      "riskLevel": "high",
+      "riskScore": 85,
+      "admissionDate": "2025-11-10",
+      "lastCheck": "Nov 18, 2025 at 01:51 PM",
+      "lastCheckTimestamp": 1763491911532,
+      "riskFactors": [
+        "Age > 75",
+        "Post-operative confusion",
+        "Sleep disturbance",
+        "Multiple medications"
+      ]
+    },
+    {
+      "id": "P002",
+      "name": "Robert Chen",
+      "age": 82,
+      "room": "301B",
+      "riskLevel": "high",
+      "riskScore": 92,
+      "admissionDate": "2025-11-08",
+      "lastCheck": "Nov 18, 2025 at 01:53 PM",
+      "lastCheckTimestamp": 1763492033992,
+      "riskFactors": [
+        "Dementia history",
+        "ICU admission",
+        "Sedative use",
+        "Dehydration"
+      ]
+    },
+    {
+      "id": "P003",
+      "name": "Sarah Johnson",
+      "age": 71,
+      "room": "156C",
+      "riskLevel": "medium",
+      "riskScore": 58,
+      "admissionDate": "2025-11-12",
+      "lastCheck": "Nov 18, 2025 at 11:30 AM",
+      "lastCheckTimestamp": 1731933000000,
+      "riskFactors": [
+        "Age > 70",
+        "Pain management",
+        "Limited mobility"
+      ]
+    },
+    {
+      "id": "P004",
+      "name": "James Wilson",
+      "age": 69,
+      "room": "208A",
+      "riskLevel": "medium",
+      "riskScore": 62,
+      "admissionDate": "2025-11-13",
+      "lastCheck": "Nov 18, 2025 at 11:15 AM",
+      "lastCheckTimestamp": 1731932100000,
+      "riskFactors": [
+        "Recent surgery",
+        "Polypharmacy",
+        "Hearing impairment"
+      ]
+    },
+    {
+      "id": "P005",
+      "name": "Emily Rodriguez",
+      "age": 65,
+      "room": "102B",
+      "riskLevel": "low",
+      "riskScore": 28,
+      "admissionDate": "2025-11-14",
+      "lastCheck": "Nov 18, 2025 at 11:40 AM",
+      "lastCheckTimestamp": 1731933600000,
+      "riskFactors": [
+        "Mild cognitive impairment"
+      ]
+    },
+    {
+      "id": "P006",
+      "name": "Michael Davis",
+      "age": 76,
+      "room": "315A",
+      "riskLevel": "high",
+      "riskScore": 88,
+      "admissionDate": "2025-11-09",
+      "lastCheck": "Nov 18, 2025 at 01:51 PM",
+      "lastCheckTimestamp": 1763491909436,
+      "riskFactors": [
+        "Age > 75",
+        "Visual impairment",
+        "Infection present",
+        "Abnormal vital signs"
+      ]
+    },
+    {
+      "id": "P007",
+      "name": "Linda Martinez",
+      "age": 68,
+      "room": "219C",
+      "riskLevel": "medium",
+      "riskScore": 55,
+      "admissionDate": "2025-11-11",
+      "lastCheck": "Nov 18, 2025 at 11:00 AM",
+      "lastCheckTimestamp": 1731931200000,
+      "riskFactors": [
+        "Electrolyte imbalance",
+        "Catheter use",
+        "Pain > 6/10"
+      ]
+    },
+    {
+      "id": "P008",
+      "name": "David Brown",
+      "age": 72,
+      "room": "405B",
+      "riskLevel": "low",
+      "riskScore": 32,
+      "admissionDate": "2025-11-15",
+      "lastCheck": "Nov 18, 2025 at 11:45 AM",
+      "lastCheckTimestamp": 1731933900000,
+      "riskFactors": [
+        "Age > 70",
+        "Scheduled surgery"
+      ]
+    },
+    {
+      "id": "P009",
+      "name": "Patricia Lee",
+      "age": 80,
+      "room": "112A",
+      "riskLevel": "high",
+      "riskScore": 90,
+      "admissionDate": "2025-11-07",
+      "lastCheck": "Nov 18, 2025 at 01:51 PM",
+      "lastCheckTimestamp": 1763491907501,
+      "riskFactors": [
+        "Age > 75",
+        "Delirium history",
+        "Restraint use",
+        "Severe illness"
+      ]
+    },
+    {
+      "id": "P010",
+      "name": "Thomas Anderson",
+      "age": 67,
+      "room": "203C",
+      "riskLevel": "medium",
+      "riskScore": 48,
+      "admissionDate": "2025-11-13",
+      "lastCheck": "Nov 18, 2025 at 11:10 AM",
+      "lastCheckTimestamp": 1731931800000,
+      "riskFactors": [
+        "Alcohol history",
+        "Depression",
+        "Poor nutrition"
+      ]
+    },
+    {
+      "id": "P011",
+      "name": "Barbara White",
+      "age": 63,
+      "room": "307A",
+      "riskLevel": "low",
+      "riskScore": 25,
+      "admissionDate": "2025-11-16",
+      "lastCheck": "Nov 18, 2025 at 11:50 AM",
+      "lastCheckTimestamp": 1731934200000,
+      "riskFactors": [
+        "Pre-operative assessment"
+      ]
+    },
+    {
+      "id": "P012",
+      "name": "Charles Garcia",
+      "age": 75,
+      "room": "410B",
+      "riskLevel": "medium",
+      "riskScore": 65,
+      "admissionDate": "2025-11-10",
+      "lastCheck": "Nov 18, 2025 at 11:20 AM",
+      "lastCheckTimestamp": 1731932400000,
+      "riskFactors": [
+        "Age > 70",
+        "Pneumonia",
+        "Oxygen therapy",
+        "Confusion episodes"
+      ]
+    },
+    {
+      "id": "P013",
+      "name": "Dorothy Miller",
+      "age": 84,
+      "room": "201A",
+      "riskLevel": "high",
+      "riskScore": 87,
+      "admissionDate": "2025-11-09",
+      "lastCheck": "Nov 18, 2025 at 01:56 PM",
+      "lastCheckTimestamp": 1763492194228,
+      "riskFactors": [
+        "Age > 75",
+        "Hip fracture",
+        "Cognitive decline",
+        "Limited mobility",
+        "Pain medications"
+      ]
+    },
+    {
+      "id": "P014",
+      "name": "George Martinez",
+      "age": 73,
+      "room": "305C",
+      "riskLevel": "medium",
+      "riskScore": 52,
+      "admissionDate": "2025-11-14",
+      "lastCheck": "Nov 18, 2025 at 11:25 AM",
+      "lastCheckTimestamp": 1731932700000,
+      "riskFactors": [
+        "Age > 70",
+        "Diabetes",
+        "Sleep apnea"
+      ]
+    },
+    {
+      "id": "P015",
+      "name": "Helen Taylor",
+      "age": 79,
+      "room": "108B",
+      "riskLevel": "high",
+      "riskScore": 91,
+      "admissionDate": "2025-11-06",
+      "lastCheck": "Nov 18, 2025 at 01:56 PM",
+      "lastCheckTimestamp": 1763492199017,
+      "riskFactors": [
+        "Age > 75",
+        "Stroke history",
+        "Aphasia",
+        "Restraints required",
+        "High fall risk"
+      ]
+    },
+    {
+      "id": "P016",
+      "name": "Kenneth Brown",
+      "age": 68,
+      "room": "412A",
+      "riskLevel": "low",
+      "riskScore": 35,
+      "admissionDate": "2025-11-16",
+      "lastCheck": "Nov 18, 2025 at 11:35 AM",
+      "lastCheckTimestamp": 1731933300000,
+      "riskFactors": [
+        "Pre-operative monitoring",
+        "Mild anxiety"
+      ]
+    },
+    {
+      "id": "P017",
+      "name": "Nancy Rodriguez",
+      "age": 77,
+      "room": "214C",
+      "riskLevel": "high",
+      "riskScore": 86,
+      "admissionDate": "2025-11-11",
+      "lastCheck": "Nov 18, 2025 at 01:56 PM",
+      "lastCheckTimestamp": 1763492202708,
+      "riskFactors": [
+        "Age > 75",
+        "UTI present",
+        "Dehydration",
+        "Confusion episodes",
+        "Multiple medications"
+      ]
+    },
+    {
+      "id": "P018",
+      "name": "Paul Anderson",
+      "age": 70,
+      "room": "309A",
+      "riskLevel": "medium",
+      "riskScore": 60,
+      "admissionDate": "2025-11-13",
+      "lastCheck": "Nov 18, 2025 at 11:05 AM",
+      "lastCheckTimestamp": 1731931500000,
+      "riskFactors": [
+        "Age > 70",
+        "COPD",
+        "Oxygen dependency",
+        "Recent hospitalization"
+      ]
+    },
+    {
+      "id": "P019",
+      "name": "Ruth Williams",
+      "age": 66,
+      "room": "103C",
+      "riskLevel": "low",
+      "riskScore": 30,
+      "admissionDate": "2025-11-15",
+      "lastCheck": "Nov 18, 2025 at 11:42 AM",
+      "lastCheckTimestamp": 1731933720000,
+      "riskFactors": [
+        "Hypertension",
+        "Observation only"
+      ]
+    },
+    {
+      "id": "P020",
+      "name": "Steven Garcia",
+      "age": 81,
+      "room": "206B",
+      "riskLevel": "high",
+      "riskScore": 89,
+      "admissionDate": "2025-11-08",
+      "lastCheck": "Nov 18, 2025 at 01:56 PM",
+      "lastCheckTimestamp": 1763492196464,
+      "riskFactors": [
+        "Age > 75",
+        "Parkinson's disease",
+        "Falls history",
+        "Visual impairment",
+        "Memory issues"
+      ]
+    },
+    {
+      "id": "P021",
+      "name": "Betty Thomas",
+      "age": 74,
+      "room": "407A",
+      "riskLevel": "medium",
+      "riskScore": 57,
+      "admissionDate": "2025-11-12",
+      "lastCheck": "Nov 18, 2025 at 11:18 AM",
+      "lastCheckTimestamp": 1731932280000,
+      "riskFactors": [
+        "Age > 70",
+        "Post-surgery",
+        "Pain management",
+        "Limited mobility"
+      ]
+    },
+    {
+      "id": "P022",
+      "name": "Donald Martinez",
+      "age": 69,
+      "room": "311C",
+      "riskLevel": "medium",
+      "riskScore": 54,
+      "admissionDate": "2025-11-14",
+      "lastCheck": "Nov 18, 2025 at 11:28 AM",
+      "lastCheckTimestamp": 1731932880000,
+      "riskFactors": [
+        "Cardiac issues",
+        "Medication adjustment",
+        "Fatigue"
+      ]
+    },
+    {
+      "id": "P023",
+      "name": "Carol Wilson",
+      "age": 64,
+      "room": "105A",
+      "riskLevel": "low",
+      "riskScore": 27,
+      "admissionDate": "2025-11-16",
+      "lastCheck": "Nov 18, 2025 at 11:48 AM",
+      "lastCheckTimestamp": 1731934080000,
+      "riskFactors": [
+        "Routine assessment"
+      ]
+    },
+    {
+      "id": "P024",
+      "name": "Edward Lee",
+      "age": 76,
+      "room": "213B",
+      "riskLevel": "high",
+      "riskScore": 84,
+      "admissionDate": "2025-11-10",
+      "lastCheck": "Nov 18, 2025 at 01:56 PM",
+      "lastCheckTimestamp": 1763492204692,
+      "riskFactors": [
+        "Age > 75",
+        "Sepsis recovery",
+        "ICU transfer",
+        "Weakness",
+        "Disorientation"
+      ]
+    }
+  ]
+}

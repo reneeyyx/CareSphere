@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PatientRankBar from '../PatientRankBar/PatientRankBar'
 import RiskFilter from '../RiskFilter/RiskFilter'
-import { mockPatients } from '../../data/mockPatients'
+import patientsData from '../../data/patients.json'
 import './PatientRiskDashboard.css'
 
 function PatientRiskDashboard() {
@@ -14,9 +14,19 @@ function PatientRiskDashboard() {
   const [pageSize, setPageSize] = useState(10)
 
   useEffect(() => {
-    // Simulate API call - replace with actual API call later
-    setPatients(mockPatients)
-    setFilteredPatients(mockPatients)
+    // Fetch patients from API
+    fetch('http://localhost:3001/api/patients')
+      .then(response => response.json())
+      .then(data => {
+        setPatients(data)
+        setFilteredPatients(data)
+      })
+      .catch(error => {
+        console.error('Error fetching patients:', error)
+        // Fallback to local data if API fails
+        setPatients(patientsData.patients)
+        setFilteredPatients(patientsData.patients)
+      })
   }, [])
 
   useEffect(() => {
@@ -59,26 +69,30 @@ function PatientRiskDashboard() {
     setExpandedPatient(expandedPatient === patientId ? null : patientId)
   }
 
-  const handleCheckIn = (patientId) => {
-    const now = new Date()
-    const timeString = now.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: true 
-    })
-    const dateString = now.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric',
-      year: 'numeric'
-    })
-    
-    setPatients(prevPatients => 
-      prevPatients.map(p => 
-        p.id === patientId 
-          ? { ...p, lastCheck: `${dateString} at ${timeString}` }
-          : p
+  const handleCheckIn = async (patientId) => {
+    try {
+      // Call API to check in patient
+      const response = await fetch(`http://localhost:3001/api/patients/${patientId}/checkin`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to check in patient')
+      }
+      
+      const updatedPatient = await response.json()
+      
+      // Update local state
+      setPatients(prevPatients => 
+        prevPatients.map(p => p.id === patientId ? updatedPatient : p)
       )
-    )
+    } catch (error) {
+      console.error('Error checking in patient:', error)
+      alert('Failed to check in patient. Please try again.')
+    }
   }
 
   // Pagination calculations

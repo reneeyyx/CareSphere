@@ -1,0 +1,184 @@
+{
+  "patients": [
+    {
+      "id": "P001",
+      "name": "Margaret Thompson",
+      "age": 78,
+      "room": "204A",
+      "riskLevel": "high",
+      "riskScore": 85,
+      "admissionDate": "2025-11-10",
+      "lastCheck": "2h ago",
+      "riskFactors": [
+        "Age > 75",
+        "Post-operative confusion",
+        "Sleep disturbance",
+        "Multiple medications"
+      ]
+    },
+    {
+      "id": "P002",
+      "name": "Robert Chen",
+      "age": 82,
+      "room": "301B",
+      "riskLevel": "high",
+      "riskScore": 92,
+      "admissionDate": "2025-11-08",
+      "lastCheck": "1h ago",
+      "riskFactors": [
+        "Dementia history",
+        "ICU admission",
+        "Sedative use",
+        "Dehydration"
+      ]
+    },
+    {
+      "id": "P003",
+      "name": "Sarah Johnson",
+      "age": 71,
+      "room": "156C",
+      "riskLevel": "medium",
+      "riskScore": 58,
+      "admissionDate": "2025-11-12",
+      "lastCheck": "30m ago",
+      "riskFactors": [
+        "Age > 70",
+        "Pain management",
+        "Limited mobility"
+      ]
+    },
+    {
+      "id": "P004",
+      "name": "James Wilson",
+      "age": 69,
+      "room": "208A",
+      "riskLevel": "medium",
+      "riskScore": 62,
+      "admissionDate": "2025-11-13",
+      "lastCheck": "45m ago",
+      "riskFactors": [
+        "Recent surgery",
+        "Polypharmacy",
+        "Hearing impairment"
+      ]
+    },
+    {
+      "id": "P005",
+      "name": "Emily Rodriguez",
+      "age": 65,
+      "room": "102B",
+      "riskLevel": "low",
+      "riskScore": 28,
+      "admissionDate": "2025-11-14",
+      "lastCheck": "20m ago",
+      "riskFactors": [
+        "Mild cognitive impairment"
+      ]
+    },
+    {
+      "id": "P006",
+      "name": "Michael Davis",
+      "age": 76,
+      "room": "315A",
+      "riskLevel": "high",
+      "riskScore": 88,
+      "admissionDate": "2025-11-09",
+      "lastCheck": "3h ago",
+      "riskFactors": [
+        "Age > 75",
+        "Visual impairment",
+        "Infection present",
+        "Abnormal vital signs"
+      ]
+    },
+    {
+      "id": "P007",
+      "name": "Linda Martinez",
+      "age": 68,
+      "room": "219C",
+      "riskLevel": "medium",
+      "riskScore": 55,
+      "admissionDate": "2025-11-11",
+      "lastCheck": "1h ago",
+      "riskFactors": [
+        "Electrolyte imbalance",
+        "Catheter use",
+        "Pain > 6/10"
+      ]
+    },
+    {
+      "id": "P008",
+      "name": "David Brown",
+      "age": 72,
+      "room": "405B",
+      "riskLevel": "low",
+      "riskScore": 32,
+      "admissionDate": "2025-11-15",
+      "lastCheck": "15m ago",
+      "riskFactors": [
+        "Age > 70",
+        "Scheduled surgery"
+      ]
+    },
+    {
+      "id": "P009",
+      "name": "Patricia Lee",
+      "age": 80,
+      "room": "112A",
+      "riskLevel": "high",
+      "riskScore": 90,
+      "admissionDate": "2025-11-07",
+      "lastCheck": "2h ago",
+      "riskFactors": [
+        "Age > 75",
+        "Delirium history",
+        "Restraint use",
+        "Severe illness"
+      ]
+    },
+    {
+      "id": "P010",
+      "name": "Thomas Anderson",
+      "age": 67,
+      "room": "203C",
+      "riskLevel": "medium",
+      "riskScore": 48,
+      "admissionDate": "2025-11-13",
+      "lastCheck": "50m ago",
+      "riskFactors": [
+        "Alcohol history",
+        "Depression",
+        "Poor nutrition"
+      ]
+    },
+    {
+      "id": "P011",
+      "name": "Barbara White",
+      "age": 63,
+      "room": "307A",
+      "riskLevel": "low",
+      "riskScore": 25,
+      "admissionDate": "2025-11-16",
+      "lastCheck": "10m ago",
+      "riskFactors": [
+        "Pre-operative assessment"
+      ]
+    },
+    {
+      "id": "P012",
+      "name": "Charles Garcia",
+      "age": 75,
+      "room": "410B",
+      "riskLevel": "medium",
+      "riskScore": 65,
+      "admissionDate": "2025-11-10",
+      "lastCheck": "40m ago",
+      "riskFactors": [
+        "Age > 70",
+        "Pneumonia",
+        "Oxygen therapy",
+        "Confusion episodes"
+      ]
+    }
+  ]
+}
