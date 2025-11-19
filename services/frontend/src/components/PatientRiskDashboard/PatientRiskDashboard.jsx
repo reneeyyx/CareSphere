@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PatientRankBar from '../PatientRankBar/PatientRankBar'
 import RiskFilter from '../RiskFilter/RiskFilter'
-import { mockPatients } from '../../data/mockPatients'
+import patientsData from '../../data/patients.json'
 import './PatientRiskDashboard.css'
 
 function PatientRiskDashboard() {
@@ -12,19 +12,48 @@ function PatientRiskDashboard() {
   const [expandedPatient, setExpandedPatient] = useState(null)
   const [currentPage, setCurrentPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
-    // Simulate API call - replace with actual API call later
-    setPatients(mockPatients)
-    setFilteredPatients(mockPatients)
+    // Fetch patients from API
+    fetch('http://localhost:3001/api/patients')
+      .then(response => response.json())
+      .then(data => {
+        setPatients(data)
+        setFilteredPatients(data)
+      })
+      .catch(error => {
+        console.error('Error fetching patients:', error)
+        // Fallback to local data if API fails
+        setPatients(patientsData.patients)
+        setFilteredPatients(patientsData.patients)
+      })
   }, [])
 
   useEffect(() => {
     let filtered = [...patients]
     
-    // Filter by risk level
+    // Filter by search query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase()
+      filtered = filtered.filter(p => 
+        p.name.toLowerCase().includes(query) ||
+        p.id.toLowerCase().includes(query) ||
+        p.room.toLowerCase().includes(query) ||
+        p.riskLevel.toLowerCase().includes(query) ||
+        p.age.toString().includes(query)
+      )
+    }
+    
+    // Filter by risk level or check-in status
     if (selectedRisk !== 'all') {
-      filtered = filtered.filter(p => p.riskLevel === selectedRisk)
+      if (selectedRisk === 'overdue') {
+        filtered = filtered.filter(p => getCheckInStatus(p) === 'overdue')
+      } else if (selectedRisk === 'due-soon') {
+        filtered = filtered.filter(p => getCheckInStatus(p) === 'due-soon')
+      } else {
+        filtered = filtered.filter(p => p.riskLevel === selectedRisk)
+      }
     }
 
     // Sort patients
@@ -46,12 +75,29 @@ function PatientRiskDashboard() {
     })
 
     setFilteredPatients(filtered)
-  }, [patients, selectedRisk, sortBy])
+  }, [patients, selectedRisk, sortBy, searchQuery])
+
+  // Helper function to get check-in status
+  const getCheckInStatus = (patient) => {
+    if (!patient.lastCheckTimestamp) return 'unknown'
+    
+    const now = new Date().getTime()
+    const hoursSinceCheck = (now - patient.lastCheckTimestamp) / (1000 * 60 * 60)
+    const checkInterval = patient.riskLevel === 'high' ? 2 : 
+                         patient.riskLevel === 'medium' ? 4 : 8
+    const hoursRemaining = checkInterval - hoursSinceCheck
+    
+    if (hoursRemaining <= 0) return 'overdue'
+    if (hoursRemaining <= 0.5) return 'due-soon'
+    return 'on-track'
+  }
 
   const riskCounts = {
     high: patients.filter(p => p.riskLevel === 'high').length,
     medium: patients.filter(p => p.riskLevel === 'medium').length,
     low: patients.filter(p => p.riskLevel === 'low').length,
+    overdue: patients.filter(p => getCheckInStatus(p) === 'overdue').length,
+    dueSoon: patients.filter(p => getCheckInStatus(p) === 'due-soon').length,
     total: patients.length
   }
 
@@ -59,26 +105,30 @@ function PatientRiskDashboard() {
     setExpandedPatient(expandedPatient === patientId ? null : patientId)
   }
 
-  const handleCheckIn = (patientId) => {
-    const now = new Date()
-    const timeString = now.toLocaleTimeString('en-US', { 
-      hour: '2-digit', 
-      minute: '2-digit',
-      hour12: true 
-    })
-    const dateString = now.toLocaleDateString('en-US', { 
-      month: 'short', 
-      day: 'numeric',
-      year: 'numeric'
-    })
-    
-    setPatients(prevPatients => 
-      prevPatients.map(p => 
-        p.id === patientId 
-          ? { ...p, lastCheck: `${dateString} at ${timeString}` }
-          : p
+  const handleCheckIn = async (patientId) => {
+    try {
+      // Call API to check in patient
+      const response = await fetch(`http://localhost:3001/api/patients/${patientId}/checkin`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      })
+      
+      if (!response.ok) {
+        throw new Error('Failed to check in patient')
+      }
+      
+      const updatedPatient = await response.json()
+      
+      // Update local state
+      setPatients(prevPatients => 
+        prevPatients.map(p => p.id === patientId ? updatedPatient : p)
       )
-    )
+    } catch (error) {
+      console.error('Error checking in patient:', error)
+      alert('Failed to check in patient. Please try again.')
+    }
   }
 
   // Pagination calculations
@@ -90,7 +140,7 @@ function PatientRiskDashboard() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1)
-  }, [selectedRisk, sortBy, pageSize])
+  }, [selectedRisk, sortBy, pageSize, searchQuery])
 
   const handlePageChange = (page) => {
     setCurrentPage(page)
@@ -134,6 +184,37 @@ function PatientRiskDashboard() {
 
   return (
     <div className="patient-risk-dashboard">
+      <div className="search-bar-container">
+        <div className="search-bar">
+          <svg 
+            className="search-icon" 
+            width="20" 
+            height="20" 
+            viewBox="0 0 20 20" 
+            fill="none"
+          >
+            <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="2"/>
+            <path d="M14 14L18 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
+          <input
+            type="text"
+            placeholder="Search by name, ID, room, or risk level..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="search-input"
+          />
+          {searchQuery && (
+            <button 
+              className="clear-search"
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear search"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+      </div>
+
       <div className="dashboard-controls">
         <RiskFilter 
           selectedRisk={selectedRisk}
