@@ -17,6 +17,12 @@ app.use(express.json())
 // Path to the patients data file
 const PATIENTS_FILE = path.join(__dirname, 'data', 'patients.json')
 
+// FastAPI service URL
+const FASTAPI_URL = 'http://localhost:8001'
+
+// Designated Arduino patient ID
+const ARDUINO_PATIENT_ID = 'P001' // The patient getting real-time monitoring
+
 // Ensure data directory exists
 async function ensureDataDir() {
   const dataDir = path.join(__dirname, 'data')
@@ -40,27 +46,74 @@ async function initializeDataFile() {
   }
 }
 
-// GET all patients
+// GET all patients (with live Arduino data for designated patient)
 app.get('/api/patients', async (req, res) => {
   try {
     const data = await fs.readFile(PATIENTS_FILE, 'utf-8')
     const patientsData = JSON.parse(data)
-    res.json(patientsData.patients)
+    let patients = patientsData.patients
+    
+    // Try to update the Arduino patient with live prediction
+    try {
+      const arduinoPatient = patients.find(p => p.id === ARDUINO_PATIENT_ID)
+      if (arduinoPatient) {
+        const response = await fetch(`${FASTAPI_URL}/predict-delirium/from-arduino?age=${arduinoPatient.age}`)
+        if (response.ok) {
+          const prediction = await response.json()
+          
+          // Update patient with live data
+          const patientIndex = patients.findIndex(p => p.id === ARDUINO_PATIENT_ID)
+          patients[patientIndex] = {
+            ...arduinoPatient,
+            riskScore: Math.round(prediction.risk_score * 100),
+            riskLevel: prediction.risk_level.toLowerCase(),
+            riskFactors: prediction.top_features,
+            isLiveMonitored: true,
+            lastPrediction: new Date().toISOString()
+          }
+        }
+      }
+    } catch (error) {
+      console.log('FastAPI not available, using static data')
+    }
+    
+    res.json(patients)
   } catch (error) {
     console.error('Error reading patients:', error)
     res.status(500).json({ error: 'Failed to read patients data' })
   }
 })
 
-// GET single patient
+// GET single patient (with live Arduino data if applicable)
 app.get('/api/patients/:id', async (req, res) => {
   try {
     const data = await fs.readFile(PATIENTS_FILE, 'utf-8')
     const patientsData = JSON.parse(data)
-    const patient = patientsData.patients.find(p => p.id === req.params.id)
+    let patient = patientsData.patients.find(p => p.id === req.params.id)
     
     if (!patient) {
       return res.status(404).json({ error: 'Patient not found' })
+    }
+    
+    // If this is the Arduino patient, get live prediction
+    if (req.params.id === ARDUINO_PATIENT_ID) {
+      try {
+        const response = await fetch(`${FASTAPI_URL}/predict-delirium/from-arduino?age=${patient.age}`)
+        if (response.ok) {
+          const prediction = await response.json()
+          
+          patient = {
+            ...patient,
+            riskScore: Math.round(prediction.risk_score * 100),
+            riskLevel: prediction.risk_level.toLowerCase(),
+            riskFactors: prediction.top_features,
+            isLiveMonitored: true,
+            lastPrediction: new Date().toISOString()
+          }
+        }
+      } catch (error) {
+        console.log('FastAPI not available for patient:', error.message)
+      }
     }
     
     res.json(patient)
@@ -133,6 +186,24 @@ app.post('/api/patients/:id/checkin', async (req, res) => {
   } catch (error) {
     console.error('Error checking in patient:', error)
     res.status(500).json({ error: 'Failed to check in patient' })
+  }
+})
+
+// GET live sensor data for Arduino patient
+app.get('/api/patients/:id/sensor-data', async (req, res) => {
+  if (req.params.id !== ARDUINO_PATIENT_ID) {
+    return res.status(400).json({ error: 'Sensor data only available for live monitored patient' })
+  }
+  
+  try {
+    const response = await fetch(`${FASTAPI_URL}/sensor-data/latest`)
+    if (!response.ok) {
+      throw new Error('Sensor data not available')
+    }
+    const sensorData = await response.json()
+    res.json(sensorData)
+  } catch (error) {
+    res.status(503).json({ error: 'Sensor data unavailable', message: error.message })
   }
 })
 
