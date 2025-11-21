@@ -4,7 +4,7 @@ import { SerialPort } from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
 
 const PORT = 4002; // Backend API port
-const ARDUINO_PORT = 'COM10'; // Change as needed
+const ARDUINO_PORT = process.env.ARDUINO_PORT || 'COM3'; // Change as needed
 const BAUD = 9600;
 
 const app = express();
@@ -26,9 +26,31 @@ const MAX_HISTORY = 100;
 let serialPort;
 let parser;
 
-function initializeSerialPort() {
+async function findArduinoPort() {
+  const { SerialPort: SP } = await import('serialport');
+  const ports = await SP.list();
+  
+  console.log('Available ports:');
+  ports.forEach(port => {
+    console.log(`  ${port.path} - ${port.manufacturer || 'Unknown'}`);
+  });
+  
+  // Try to find Arduino
+  const arduinoPort = ports.find(port => 
+    port.manufacturer?.includes('Arduino') ||
+    port.manufacturer?.includes('FTDI') ||
+    port.path === ARDUINO_PORT
+  );
+  
+  return arduinoPort?.path || ARDUINO_PORT;
+}
+
+async function initializeSerialPort() {
   try {
-    serialPort = new SerialPort({ path: ARDUINO_PORT, baudRate: BAUD });
+    const portPath = await findArduinoPort();
+    console.log(`Attempting to connect to: ${portPath}`);
+    
+    serialPort = new SerialPort({ path: portPath, baudRate: BAUD });
     parser = serialPort.pipe(new ReadlineParser({ delimiter: '\n' }));
     
     parser.on('data', (line) => {
@@ -56,11 +78,15 @@ function initializeSerialPort() {
     
     serialPort.on('error', (err) => {
       console.error('Serial port error:', err.message);
+      console.log('💡 Tip: Make sure Arduino is connected and check the COM port');
+      console.log('💡 Available COM ports listed above');
     });
     
-    console.log(`Connected to Arduino on ${ARDUINO_PORT}`);
+    console.log(`✓ Connected to Arduino on ${portPath}`);
   } catch (err) {
     console.error(`Failed to connect to Arduino: ${err.message}`);
+    console.log('⚠️  Sensor API will run without real sensor data');
+    console.log('💡 To fix: Connect Arduino and restart with: node sensors.js');
   }
 }
 
