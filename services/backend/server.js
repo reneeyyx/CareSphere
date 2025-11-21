@@ -53,17 +53,27 @@ app.get('/api/patients', async (req, res) => {
     const patientsData = JSON.parse(data)
     let patients = patientsData.patients
     
+    // Mark the Arduino patient as live monitored
+    const arduinoPatientIndex = patients.findIndex(p => p.id === ARDUINO_PATIENT_ID)
+    if (arduinoPatientIndex !== -1) {
+      patients[arduinoPatientIndex] = {
+        ...patients[arduinoPatientIndex],
+        isLiveMonitored: true
+      }
+    }
+    
     // Try to update the Arduino patient with live prediction
     try {
-      const arduinoPatient = patients.find(p => p.id === ARDUINO_PATIENT_ID)
+      const arduinoPatient = patients[arduinoPatientIndex]
       if (arduinoPatient) {
-        const response = await fetch(`${FASTAPI_URL}/predict-delirium/from-arduino?age=${arduinoPatient.age}`)
+        const response = await fetch(`${FASTAPI_URL}/predict-delirium/from-arduino?age=${arduinoPatient.age}`, {
+          signal: AbortSignal.timeout(3000)
+        })
         if (response.ok) {
           const prediction = await response.json()
           
           // Update patient with live data
-          const patientIndex = patients.findIndex(p => p.id === ARDUINO_PATIENT_ID)
-          patients[patientIndex] = {
+          patients[arduinoPatientIndex] = {
             ...arduinoPatient,
             riskScore: Math.round(prediction.risk_score * 100),
             riskLevel: prediction.risk_level.toLowerCase(),
@@ -71,10 +81,11 @@ app.get('/api/patients', async (req, res) => {
             isLiveMonitored: true,
             lastPrediction: new Date().toISOString()
           }
+          console.log(`✓ Live prediction updated for ${arduinoPatient.name}`)
         }
       }
     } catch (error) {
-      console.log('FastAPI not available, using static data')
+      console.log('⚠ FastAPI not available, showing static data with live badge')
     }
     
     res.json(patients)
@@ -95,10 +106,17 @@ app.get('/api/patients/:id', async (req, res) => {
       return res.status(404).json({ error: 'Patient not found' })
     }
     
+    // Mark as live monitored if Arduino patient
+    if (req.params.id === ARDUINO_PATIENT_ID) {
+      patient = { ...patient, isLiveMonitored: true }
+    }
+    
     // If this is the Arduino patient, get live prediction
     if (req.params.id === ARDUINO_PATIENT_ID) {
       try {
-        const response = await fetch(`${FASTAPI_URL}/predict-delirium/from-arduino?age=${patient.age}`)
+        const response = await fetch(`${FASTAPI_URL}/predict-delirium/from-arduino?age=${patient.age}`, {
+          signal: AbortSignal.timeout(3000)
+        })
         if (response.ok) {
           const prediction = await response.json()
           
@@ -110,9 +128,10 @@ app.get('/api/patients/:id', async (req, res) => {
             isLiveMonitored: true,
             lastPrediction: new Date().toISOString()
           }
+          console.log(`✓ Live prediction updated for ${patient.name}`)
         }
       } catch (error) {
-        console.log('FastAPI not available for patient:', error.message)
+        console.log('⚠ FastAPI not available for patient:', error.message)
       }
     }
     

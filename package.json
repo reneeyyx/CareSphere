@@ -1,4 +1,7 @@
 {
+  "name": "caresphere-arduino-sensors",
+  "version": "1.0.0",
+  "type": "module",
   "dependencies": {
     "@serialport/parser-readline": "^13.0.0",
     "cors": "^2.8.5",

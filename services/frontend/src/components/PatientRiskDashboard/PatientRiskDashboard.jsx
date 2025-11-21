@@ -16,18 +16,29 @@ function PatientRiskDashboard() {
 
   useEffect(() => {
     // Fetch patients from API
-    fetch('http://localhost:3001/api/patients')
-      .then(response => response.json())
-      .then(data => {
-        setPatients(data)
-        setFilteredPatients(data)
-      })
-      .catch(error => {
-        console.error('Error fetching patients:', error)
-        // Fallback to local data if API fails
-        setPatients(patientsData.patients)
-        setFilteredPatients(patientsData.patients)
-      })
+    const fetchPatients = () => {
+      fetch('http://localhost:3001/api/patients')
+        .then(response => response.json())
+        .then(data => {
+          setPatients(data)
+          setFilteredPatients(data)
+        })
+        .catch(error => {
+          console.error('Error fetching patients:', error)
+          // Fallback to local data if API fails
+          setPatients(patientsData.patients)
+          setFilteredPatients(patientsData.patients)
+        })
+    }
+
+    // Initial fetch
+    fetchPatients()
+
+    // Auto-refresh every 5 seconds for live updates
+    const interval = setInterval(fetchPatients, 5000)
+
+    // Cleanup on unmount
+    return () => clearInterval(interval)
   }, [])
 
   useEffect(() => {
