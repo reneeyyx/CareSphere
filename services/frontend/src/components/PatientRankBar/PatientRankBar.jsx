@@ -85,7 +85,14 @@ function PatientRankBar({ patient, rank, isExpanded, onToggle, onCheckIn }) {
         
         <div className="patient-summary">
           <div className="patient-main-info">
-            <h3 className="patient-name">{patient.name}</h3>
+            <h3 className="patient-name">
+              {patient.name}
+              {patient.isLiveMonitored && (
+                <span className="live-badge" title="Live monitoring via Arduino sensors">
+                  🔴 LIVE
+                </span>
+              )}
+            </h3>
             <span className="patient-room">Room {patient.room}</span>
             {checkInStatus.status !== 'on-track' && (
               <span 
