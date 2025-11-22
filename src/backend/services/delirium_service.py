@@ -30,7 +30,7 @@ class DeliriumInput(BaseModel):
     sound_night_db: float
     light_day_lux: float
     light_night_lux: float
-    hr_mean: float
+    hr_mean: float = 75.0  # Default normal resting heart rate
     temp_mean: float
     age: float
 
@@ -101,7 +101,7 @@ def predict_delirium(input_data: DeliriumInput):
     )
 
 
-@app.post("/predict-delirium/from-arduino", response_model=DeliriumOutput)
+@app.get("/predict-delirium/from-arduino", response_model=DeliriumOutput)
 async def predict_delirium_from_arduino(age: float = 75.0):
     """
     Predict delirium risk using live Arduino sensor data from Node.js API
@@ -125,7 +125,7 @@ async def predict_delirium_from_arduino(age: float = 75.0):
         'sound_night_db': stats['sound_mean'],  # Could track day/night separately
         'light_day_lux': stats['light_mean'],   # May need conversion to lux
         'light_night_lux': stats['light_mean'], # Could track day/night separately
-        'hr_mean': stats['hr_mean'],
+        'hr_mean': 75.0,  # Default normal heart rate (sensor not connected)
         'temp_mean': stats['temp_mean'],
         'age': age
     }

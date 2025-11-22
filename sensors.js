@@ -4,7 +4,7 @@ import { SerialPort } from 'serialport';
 import { ReadlineParser } from '@serialport/parser-readline';
 
 const PORT = 4002; // Backend API port
-const ARDUINO_PORT = process.env.ARDUINO_PORT || 'COM3'; // Change as needed
+const ARDUINO_PORT = process.env.ARDUINO_PORT || 'COM7'; // Change as needed
 const BAUD = 9600;
 
 const app = express();
@@ -60,7 +60,6 @@ async function initializeSerialPort() {
           light: data.light,
           sound: data.sound,
           temperature: data.temperature,
-          heart_rate: data.heart_rate,
           timestamp: data.timestamp || Date.now()
         };
         
@@ -121,7 +120,6 @@ app.get('/api/sensors/stats', (req, res) => {
     light_mean: average(sensorHistory.map(s => s.light)),
     sound_mean: average(sensorHistory.map(s => s.sound)),
     temp_mean: average(sensorHistory.map(s => s.temperature)),
-    hr_mean: average(sensorHistory.map(s => s.heart_rate)),
     sample_count: sensorHistory.length,
     time_range: {
       first: sensorHistory[0].received_at,

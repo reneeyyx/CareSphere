@@ -2,6 +2,13 @@
   "name": "caresphere-arduino-sensors",
   "version": "1.0.0",
   "type": "module",
+  "scripts": {
+    "start:sensors": "node sensors.js",
+    "start:backend": "cd services/backend && node server.js",
+    "start:frontend": "cd services/frontend && npm run dev",
+    "start:fastapi": "cd src/backend/services && uvicorn delirium_service:app --host 0.0.0.0 --port 8001",
+    "dev": "echo Run each service in separate terminals: npm run start:sensors, npm run start:backend, npm run start:frontend"
+  },
   "dependencies": {
     "@serialport/parser-readline": "^13.0.0",
     "cors": "^2.8.5",
