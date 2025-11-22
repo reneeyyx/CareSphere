@@ -10,7 +10,6 @@ let latestSensorData = {
   light: 650,
   sound: 450,
   temperature: 26.5,
-  heart_rate: 78,
   timestamp: Date.now()
 };
 
@@ -23,13 +22,11 @@ function generateMockSensorData() {
   const baseLight = 600 + Math.random() * 200; // 600-800 (higher = quieter/darker hospital)
   const baseSound = 400 + Math.random() * 300; // 400-700 (higher = louder)
   const baseTemp = 25 + Math.random() * 4; // 25-29°C
-  const baseHR = 70 + Math.random() * 30; // 70-100 bpm
   
   latestSensorData = {
     light: Math.round(baseLight),
     sound: Math.round(baseSound),
     temperature: Math.round(baseTemp * 100) / 100,
-    heart_rate: Math.round(baseHR * 10) / 10,
     timestamp: Date.now()
   };
   
@@ -72,7 +69,6 @@ app.get('/api/sensors/stats', (req, res) => {
     light_mean: average(sensorHistory.map(s => s.light)),
     sound_mean: average(sensorHistory.map(s => s.sound)),
     temp_mean: average(sensorHistory.map(s => s.temperature)),
-    hr_mean: average(sensorHistory.map(s => s.heart_rate)),
     sample_count: sensorHistory.length,
     time_range: {
       first: sensorHistory[0].received_at,
