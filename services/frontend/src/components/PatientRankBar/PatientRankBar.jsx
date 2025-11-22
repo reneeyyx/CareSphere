@@ -1,10 +1,35 @@
+/**
+ * PatientRankBar Component
+ * 
+ * Displays a patient card in the risk dashboard with expandable details.
+ * For live monitored patients (P001), shows real-time Arduino sensor data.
+ * 
+ * Features:
+ * - Risk score visualization with color coding
+ * - Live sensor data display (light, sound, temperature)
+ * - Environmental threshold monitoring with warnings
+ * - Auto-refresh sensor data every 3 seconds
+ * - Risk factor chips
+ * - Expandable details panel
+ * 
+ * Props:
+ * - patient: Patient object with {id, name, age, riskScore, riskLevel, isLiveMonitored, ...}
+ * - rank: Position in risk-sorted list
+ * - isExpanded: Whether details panel is open
+ * - onToggle: Function to toggle expansion
+ * - onCheckIn: Function to record check-in
+ */
+
 import React, { useState, useEffect } from 'react'
 import './PatientRankBar.css'
 
 function PatientRankBar({ patient, rank, isExpanded, onToggle, onCheckIn }) {
   const [sensorData, setSensorData] = useState(null)
 
-  // Fetch sensor data for live monitored patients
+  /**
+   * Fetch real-time sensor data from Arduino API for live monitored patients
+   * Automatically refreshes every 3 seconds when patient card is expanded
+   */
   useEffect(() => {
     if (patient.isLiveMonitored && isExpanded) {
       const fetchSensorData = async () => {
@@ -19,14 +44,26 @@ function PatientRankBar({ patient, rank, isExpanded, onToggle, onCheckIn }) {
         }
       }
       
-      fetchSensorData()
+      fetchSensorData() // Initial fetch
       const interval = setInterval(fetchSensorData, 3000) // Update every 3 seconds
-      return () => clearInterval(interval)
+      return () => clearInterval(interval) // Cleanup on unmount
     }
   }, [patient.isLiveMonitored, isExpanded])
 
-  // Check if environmental factors exceed safe thresholds
+  /**
+   * Check if environmental factors exceed safe thresholds for delirium prevention
+   * 
+   * Thresholds based on clinical guidelines:
+   * - Light: 100-500 lux (prevents circadian disruption)
+   * - Sound: <60 dB (prevents sleep disruption)
+   * - Temperature: 20-24°C (optimal comfort range)
+   * 
+   * @param {string} type - Sensor type: 'light', 'sound', or 'temperature'
+   * @param {number} value - Sensor reading value
+   * @returns {object} Status object with {status, warning, message, color}
+   */
   const getEnvironmentalStatus = (type, value) => {
+    // Define safe thresholds for each environmental factor
     const thresholds = {
       light: { min: 100, max: 500, unit: 'lux', optimal: '100-500' },
       sound: { min: 0, max: 60, unit: 'dB', optimal: '<60' },
@@ -38,13 +75,16 @@ function PatientRankBar({ patient, rank, isExpanded, onToggle, onCheckIn }) {
       return { status: 'normal', warning: false, message: '' }
     }
 
+    // Light level checks
     if (type === 'light') {
       if (value < threshold.min) {
         return { status: 'warning', warning: true, message: '⚠️ Too Dark', color: '#f59e0b' }
       } else if (value > threshold.max) {
         return { status: 'danger', warning: true, message: '🚨 Too Bright', color: '#ef4444' }
       }
-    } else if (type === 'sound') {
+    } 
+    // Sound level checks
+    else if (type === 'sound') {
       if (value > threshold.max) {
         return { status: 'danger', warning: true, message: '🚨 Too Loud', color: '#ef4444' }
       } else if (value > threshold.max * 0.8) {

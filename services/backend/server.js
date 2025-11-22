@@ -1,9 +1,30 @@
+/**
+ * CareSphere Backend API Server
+ * 
+ * This Express server acts as the main backend for the CareSphere patient monitoring system.
+ * 
+ * Key responsibilities:
+ * 1. Serves patient data from JSON file (patients.json)
+ * 2. Integrates with FastAPI ML service for delirium risk predictions
+ * 3. Marks Patient P001 as "live monitored" with real-time Arduino sensor data
+ * 4. Provides REST API for frontend React dashboard
+ * 
+ * API Endpoints:
+ * - GET /api/patients - List all patients (P001 gets live risk score)
+ * - GET /api/patients/:id - Get single patient (P001 gets live risk score)
+ * - PUT /api/patients/:id - Update patient data
+ * - POST /api/patients/:id/checkin - Record check-in timestamp
+ * - GET /api/patients/:id/sensor-data - Get sensor data for live monitored patient
+ * - GET /api/health - Health check endpoint
+ */
+
 import express from 'express'
 import cors from 'cors'
 import fs from 'fs/promises'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
+// ES module compatibility for __dirname
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -11,19 +32,17 @@ const app = express()
 const PORT = 3001
 
 // Middleware
-app.use(cors())
-app.use(express.json())
+app.use(cors()) // Enable CORS for frontend (port 3000)
+app.use(express.json()) // Parse JSON request bodies
 
-// Path to the patients data file
+// Configuration
 const PATIENTS_FILE = path.join(__dirname, 'data', 'patients.json')
+const FASTAPI_URL = 'http://localhost:8001' // ML prediction service
+const ARDUINO_PATIENT_ID = 'P001' // Margaret Thompson - designated for live Arduino monitoring
 
-// FastAPI service URL
-const FASTAPI_URL = 'http://localhost:8001'
-
-// Designated Arduino patient ID
-const ARDUINO_PATIENT_ID = 'P001' // The patient getting real-time monitoring
-
-// Ensure data directory exists
+/**
+ * Ensure data directory exists, create if missing
+ */
 async function ensureDataDir() {
   const dataDir = path.join(__dirname, 'data')
   try {
@@ -33,12 +52,13 @@ async function ensureDataDir() {
   }
 }
 
-// Initialize data file if it doesn't exist
+/**
+ * Initialize patients.json file with empty structure if it doesn't exist
+ */
 async function initializeDataFile() {
   try {
     await fs.access(PATIENTS_FILE)
   } catch {
-    // Copy from frontend if exists, otherwise create empty
     const defaultData = {
       patients: []
     }
@@ -46,7 +66,10 @@ async function initializeDataFile() {
   }
 }
 
-// GET all patients (with live Arduino data for designated patient)
+/**
+ * GET /api/patients
+ * Returns all patients, with live Arduino risk prediction for P001
+ */
 app.get('/api/patients', async (req, res) => {
   try {
     const data = await fs.readFile(PATIENTS_FILE, 'utf-8')
