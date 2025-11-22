@@ -304,6 +304,74 @@
   font-weight: 600;
 }
 
+/* Environmental Factors Section */
+.environmental-factors-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-top: 12px;
+}
+
+.env-factor-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2);
+  transition: all 0.3s ease;
+}
+
+.env-factor-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.env-icon {
+  font-size: 2rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.env-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.env-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.env-value {
+  font-size: 1.5rem;
+  color: white;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.env-unit {
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.env-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 4px;
+  padding: 2px 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  display: inline-block;
+  backdrop-filter: blur(10px);
+}
+
 .risk-factors-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));

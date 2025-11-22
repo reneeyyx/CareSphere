@@ -1,7 +1,66 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import './PatientRankBar.css'
 
 function PatientRankBar({ patient, rank, isExpanded, onToggle, onCheckIn }) {
+  const [sensorData, setSensorData] = useState(null)
+
+  // Fetch sensor data for live monitored patients
+  useEffect(() => {
+    if (patient.isLiveMonitored && isExpanded) {
+      const fetchSensorData = async () => {
+        try {
+          const response = await fetch('http://localhost:4002/api/sensors/latest')
+          if (response.ok) {
+            const data = await response.json()
+            setSensorData(data)
+          }
+        } catch (error) {
+          console.log('Sensor data unavailable')
+        }
+      }
+      
+      fetchSensorData()
+      const interval = setInterval(fetchSensorData, 3000) // Update every 3 seconds
+      return () => clearInterval(interval)
+    }
+  }, [patient.isLiveMonitored, isExpanded])
+
+  // Check if environmental factors exceed safe thresholds
+  const getEnvironmentalStatus = (type, value) => {
+    const thresholds = {
+      light: { min: 100, max: 500, unit: 'lux', optimal: '100-500' },
+      sound: { min: 0, max: 60, unit: 'dB', optimal: '<60' },
+      temperature: { min: 20, max: 24, unit: '°C', optimal: '20-24' }
+    }
+
+    const threshold = thresholds[type]
+    if (!threshold || value === null || value === undefined) {
+      return { status: 'normal', warning: false, message: '' }
+    }
+
+    if (type === 'light') {
+      if (value < threshold.min) {
+        return { status: 'warning', warning: true, message: '⚠️ Too Dark', color: '#f59e0b' }
+      } else if (value > threshold.max) {
+        return { status: 'danger', warning: true, message: '🚨 Too Bright', color: '#ef4444' }
+      }
+    } else if (type === 'sound') {
+      if (value > threshold.max) {
+        return { status: 'danger', warning: true, message: '🚨 Too Loud', color: '#ef4444' }
+      } else if (value > threshold.max * 0.8) {
+        return { status: 'warning', warning: true, message: '⚠️ Moderately Loud', color: '#f59e0b' }
+      }
+    } else if (type === 'temperature') {
+      if (value < threshold.min) {
+        return { status: 'warning', warning: true, message: '⚠️ Too Cold', color: '#f59e0b' }
+      } else if (value > threshold.max) {
+        return { status: 'danger', warning: true, message: '🚨 Too Hot', color: '#ef4444' }
+      }
+    }
+
+    return { status: 'normal', warning: false, message: '✓ Optimal', color: '#10b981' }
+  }
+
   const getRiskColor = (level) => {
     switch(level) {
       case 'high':
@@ -192,29 +251,64 @@ function PatientRankBar({ patient, rank, isExpanded, onToggle, onCheckIn }) {
                   <span className="detail-label">Last Assessment:</span>
                   <span className="detail-value">{patient.lastCheck}</span>
                 </div>
-                <div className="detail-item">
-                  <span className="detail-label">Check Status:</span>
-                  <span 
-                    className="detail-value"
-                    style={{ color: checkInStatus.color, fontWeight: '700' }}
-                  >
-                    {checkInStatus.message}
-                  </span>
-                </div>
-                <div className="detail-item">
-                  <span className="detail-label"></span>
-                  <button 
-                    className="check-in-btn"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      onCheckIn(patient.id)
-                    }}
-                  >
-                    ✓ Check In Now
-                  </button>
-                </div>
               </div>
             </div>
+
+            {patient.isLiveMonitored && sensorData && (
+              <div className="detail-section full-width">
+                <h4 className="section-title">🌡️ Environmental Factors (Live)</h4>
+                <div className="environmental-factors-grid">
+                  <div className="env-factor-card" style={{ 
+                    borderLeft: getEnvironmentalStatus('light', sensorData.light).warning ? 
+                      `4px solid ${getEnvironmentalStatus('light', sensorData.light).color}` : 'none'
+                  }}>
+                    <div className="env-icon">💡</div>
+                    <div className="env-content">
+                      <span className="env-label">Light Level</span>
+                      <span className="env-value">{sensorData.light}</span>
+                      <span className="env-unit">lux</span>
+                      <span className="env-status" style={{ 
+                        color: getEnvironmentalStatus('light', sensorData.light).color 
+                      }}>
+                        {getEnvironmentalStatus('light', sensorData.light).message}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="env-factor-card" style={{ 
+                    borderLeft: getEnvironmentalStatus('sound', sensorData.sound).warning ? 
+                      `4px solid ${getEnvironmentalStatus('sound', sensorData.sound).color}` : 'none'
+                  }}>
+                    <div className="env-icon">🔊</div>
+                    <div className="env-content">
+                      <span className="env-label">Sound Level</span>
+                      <span className="env-value">{sensorData.sound}</span>
+                      <span className="env-unit">dB</span>
+                      <span className="env-status" style={{ 
+                        color: getEnvironmentalStatus('sound', sensorData.sound).color 
+                      }}>
+                        {getEnvironmentalStatus('sound', sensorData.sound).message}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="env-factor-card" style={{ 
+                    borderLeft: getEnvironmentalStatus('temperature', sensorData.temperature).warning ? 
+                      `4px solid ${getEnvironmentalStatus('temperature', sensorData.temperature).color}` : 'none'
+                  }}>
+                    <div className="env-icon">🌡️</div>
+                    <div className="env-content">
+                      <span className="env-label">Temperature</span>
+                      <span className="env-value">{sensorData.temperature?.toFixed(1)}</span>
+                      <span className="env-unit">°C</span>
+                      <span className="env-status" style={{ 
+                        color: getEnvironmentalStatus('temperature', sensorData.temperature).color 
+                      }}>
+                        {getEnvironmentalStatus('temperature', sensorData.temperature).message}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="detail-section full-width">
               <h4 className="section-title">Risk Factors</h4>
